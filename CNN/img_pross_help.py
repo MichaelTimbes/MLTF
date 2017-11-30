@@ -27,7 +27,7 @@ def prepareImage(fullImagePath, width, height, colormode):
     modifiedImage = PImage.open(fullImagePath)
 
     modifiedImage = modifiedImage.convert(colormode)
-    modifiedImage = ImageOps.fit(modifiedImage, size, PImage.ANTIALIAS,0,(0.5,0.5))
+    modifiedImage = ImageOps.fit(modifiedImage, size, PImage.BICUBIC,0,(0.5,0.5))
     return modifiedImage
 
 def randomizeImages(sourcePath):

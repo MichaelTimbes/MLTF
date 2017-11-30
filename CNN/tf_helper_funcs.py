@@ -11,6 +11,19 @@ def form_weights(shape, p_dist = 0.05):
 def form_biases(length, p_dist = 0.05):
     return tf.Variable(tf.constant(p_dist, shape=[length]))
 
+def shape_FC_to_Conv(input_matrix, input_channels, filter_size, num_filters, use_pooling=True, pooling_filter = [1,2,2,1]):
+    return tf.layers.conv2d(inputs = input_matrix, filters = num_filters, kernel_size = [filter_size, filter_size],padding="same", activation=tf.nn.relu)
+
+def new_conv2d_layer(input_m, num_filters, kernel_s, activation_type = tf.nn.relu):
+    return tf.layers.conv2d(inputs = input_m,
+                           filters= num_filters,
+                           kernel_size= [kernel_s, kernel_s],
+                           padding= "same",
+                           activation= activation_type)
+
+def new_max_pool(input_m,p_size,sride=2):
+    return tf.layers.max_pooling2d(inputs=input_m,pool_size=[p_size,p_size],strides=sride)
+
 def new_conv_layer(input_matrix, input_channels, filter_size, num_filters, use_pooling=True, pooling_filter = [1,2,2,1], Standard_RELU_ = True):
     
     filter_shape = [filter_size, filter_size, input_channels, num_filters]
@@ -23,7 +36,7 @@ def new_conv_layer(input_matrix, input_channels, filter_size, num_filters, use_p
     conv_layer += biases
     
     if use_pooling:
-        conv_layer = tf.nn.avg_pool(value = conv_layer, ksize = pooling_filter, strides = pooling_filter, padding = 'SAME')
+        conv_layer = tf.nn.max_pool(value = conv_layer, ksize = pooling_filter, strides = pooling_filter, padding = 'SAME')
     
     if Standard_RELU_:    
         conv_layer = tf.nn.relu(conv_layer)
