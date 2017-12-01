@@ -1,3 +1,7 @@
+'''
+Written by Michael Timbes and Dr. James Church. A collection of Python functions that help prepare images for logistic regression 
+classification and convolutional neural networks.
+'''
 import tensorflow as tf # Prototype Tensorflow Variables
 import numpy as np # Reshape Image Vectors and Matricies
 from os import listdir # Directory Functions
@@ -153,7 +157,15 @@ def PrepImages(source_dir,train_dir,test_dir,width,height,probability,color_mode
     
     sortImages(source_dir,train_dir,test_dir,width,height,probability,color_mode)
 
-def labelImages(srcp,savp,label_):
+def labelImages(srcp,savp,label_,fil_ext='jpeg'):
+    '''
+    Function to apply a specific label name to all images within a given source path. Saves all the images to jpeg
+    by default or to a specified file extension.
+    
+    srcp: The source path for the images
+    savp: The path to save to
+    label_: The label that all the images will have followed by the numeric index.
+    '''
 
     sourcePath = srcp
     savepath = savp
@@ -167,7 +179,7 @@ def labelImages(srcp,savp,label_):
     i = 0 # Index Reference
     for image in images:
         modifiedImage = PImage.open(sourcePath + '/' + image)
-        modifiedFileName = nlabel + str(i) + ".jpeg"
+        modifiedFileName = nlabel + str(i) + str(fil_ext)
         i+=1
         #print(modifiedFileName)
         modifiedImage.save(sourcePath + "/" + modifiedFileName)
@@ -209,6 +221,13 @@ def ImportImages(path, key_dict, colortype='rgb'):
     return np.asarray(loadedImages), np.asarray(loadedLabels)
 
 def loadImage(path, image, colortype='rgb'):
+    '''
+    Pulls a specific image from a given path, extracts the label and returns the image matrix along with the label.
+    
+    path: The full path to pull from
+    image: The image name
+    colortype: The color mode as definied by PIL's documentation (1=BW, L=Gray, RGB=Color, RGBA=Color with transparency)
+    '''
     img = PImage.open(path + '/' + image)
     label = opath.splitext(image)[:]
 
@@ -227,7 +246,7 @@ def loadImage(path, image, colortype='rgb'):
 def shape_up3d(data, width):
     """
     Expects a NUM_IN * NUM_IN sized picture.
-    Changes the shape to be (N,NUM_IN**2).
+    Flattens the shape to be (1,width**2*3).
     """
     num_exs = len(data[:,0,0,0])
     new_X = np.zeros((num_exs,width**2 * 3))
@@ -238,7 +257,7 @@ def shape_up3d(data, width):
 def shape_up2d(data, width):
     """
     Expects a NUM_IN * NUM_IN sized picture.
-    Changes the shape to be (N,NUM_IN**2).
+    Flattens the shape to be (1,NUM_IN**2).
     """
     num_exs = len(data[:,0,0])
     new_X = np.zeros((num_exs,width**2))
@@ -246,17 +265,15 @@ def shape_up2d(data, width):
         new_X[i,:] = data[i,:,:].reshape((1,width**2))
     return new_X
 
-def shape_up_X(data, size, num_channels,num_ex = -1):
+def shape_up_X(data, size, num_channels):
     """
-    shape_up_X(train_X, IMAG_X):
-    Expects a NUM_IN * NUM_IN sized picture. Changes
-    the shape to be (N,NUM_IN**2).
+    Reshapes a list of data matrices for use in a 2D convolutional network.
+    Returns a numpy array of shape [1,size,size,number_of_channels].
     ____________________________________
     """
     temp = []
     for dat in data:
         temp.append(np.reshape(dat, [1,size,size,num_channels]))
-    #return np.reshape(data, [num_ex,size,size,num_channels])
     return np.asarray(temp)
 
 def out_class(Y, keyA, keyB):

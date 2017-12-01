@@ -1,6 +1,13 @@
 """
-Written by: Michael Timbes
-Acknowledgements: Hvass-Labs ()
+Written by: 
+
+    Michael Timbes
+
+Acknowledgements: 
+
+    Hvass-Labs
+        GitHub: https://github.com/Hvass-Labs
+        WebSite: http://www.hvass-labs.org
 """
 import tensorflow as tf
 import numpy as np
@@ -17,12 +24,12 @@ def shape_FC_to_Conv(input_matrix, input_channels, filter_size, num_filters, use
 def new_conv2d_layer(input_m, num_filters, kernel_s, activation_type = tf.nn.relu):
     return tf.layers.conv2d(inputs = input_m,
                            filters= num_filters,
-                           kernel_size= [kernel_s, kernel_s],
+                           kernel_size= kernel_s,
                            padding= "same",
                            activation= activation_type)
 
 def new_max_pool(input_m,p_size,sride=2):
-    return tf.layers.max_pooling2d(inputs=input_m,pool_size=[p_size,p_size],strides=sride)
+    return tf.layers.max_pooling2d(inputs=input_m,pool_size= [p_size, p_size],strides=sride)
 
 def new_conv_layer(input_matrix, input_channels, filter_size, num_filters, use_pooling=True, pooling_filter = [1,2,2,1], Standard_RELU_ = True):
     
@@ -36,7 +43,7 @@ def new_conv_layer(input_matrix, input_channels, filter_size, num_filters, use_p
     conv_layer += biases
     
     if use_pooling:
-        conv_layer = tf.nn.max_pool(value = conv_layer, ksize = pooling_filter, strides = pooling_filter, padding = 'SAME')
+        conv_layer = tf.nn.max_pool(value = conv_layer, ksize = pooling_filter, strides = 2, padding = 'SAME')
     
     if Standard_RELU_:    
         conv_layer = tf.nn.relu(conv_layer)
